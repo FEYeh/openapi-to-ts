@@ -4,44 +4,41 @@ const terser = require("terser");
 const path = require("path");
 const builds = require("./config").getAllConfig();
 
-function build(builds) {
-  let built = 0;
-  const total = builds.length;
-  const next = () => {
-    buildEntry(builds[built])
-      .then(() => {
-        built++;
-        if (built < total) {
-          next();
-        }
-      })
-      .catch(logError);
-  };
-
-  next();
+async function build(builds) {
+  const funcs = [];
+  for (let i = 0; i < builds.length; i++) {
+    const be = buildEntry(builds[i])
+    .catch(logError);
+    funcs.push(be)
+  }
+  await Promise.all(funcs)
+  console.log('finished.');
 }
 
 build(builds);
 
-async function buildEntry(config) {
-  const { output } = config;
-  const { file } = output;
-  const isProd = /(min|prod)\.js$/.test(file);
-  const watcher = rollup.watch(config);
-  watcher.on("event", async (event) => {
-    if ((event.code === "END")) {
-      const bundle = await rollup.rollup(config);
-      const {
-        output: [{ code }],
-      } = await bundle.generate(output);
-      if (isProd) {
-        const minified = (await terser.minify(code)).code;
-        return write(file, minified);
-      } else {
-        return write(file, code);
+function buildEntry(config) {
+  return new Promise((resolve) => {
+    const { output } = config;
+    const { file } = output;
+    const isProd = /(min|prod)\.js$/.test(file);
+    const watcher = rollup.watch(config);
+    watcher.on("event", async (event) => {
+      if ((event.code === "END")) {
+        const bundle = await rollup.rollup(config);
+        const {
+          output: [{ code }],
+        } = await bundle.generate(output);
+        if (isProd) {
+          const minified = (await terser.minify(code)).code;
+          await write(file, minified);
+        } else {
+          await write(file, code);
+        }
+        resolve()
       }
-    }
-  });
+    });
+  })
 }
 
 function write(file, code) {

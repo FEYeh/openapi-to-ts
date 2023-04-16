@@ -1,13 +1,13 @@
 {
-  "name": "openapi-to-ts",
+  "name": "openapi-to-ts2",
   "version": "1.0.0",
-  "description": "generate typings and service file based on openapi",
+  "description": "A tool to generate typings and service file based on openapi",
   "main": "dist/main.js",
   "module": "dist/main.esm.js",
   "typings": "dist/main.d.ts",
   "scripts": {
     "test": "node example/main.js",
-    "start": "node script/build.js"
+    "build": "node script/build.js"
   },
   "author": "FEYeh",
   "license": "MIT",
@@ -36,11 +36,11 @@
     "openapi"
   ],
   "bugs": {
-    "url": "https://github.com/FEYeh/openapi-to-ts/issues"
+    "url": "https://github.com/FEYeh/openapi-to-ts2/issues"
   },
-  "homepage": "https://github.com/FEYeh/openapi-to-ts#readme",
+  "homepage": "https://github.com/FEYeh/openapi-to-ts2#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/FEYeh/openapi-to-ts.git"
+    "url": "git+https://github.com/FEYeh/openapi-to-ts2.git"
   }
 }

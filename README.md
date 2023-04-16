@@ -1,8 +1,8 @@
-# openapi-tool
+# openapi-to-ts2
 
-English | [简体中文](https://github.com/huajiayi/openapi-tool/blob/main/README_CN.md)
+English | [简体中文](https://github.com/FEYeh/openapi-to-ts2/blob/main/README_CN.md)
 
-openapi-tool is a tool to generate service file based on openapi.
+openapi-to-ts2 is a tool to generate typings and service file based on openapi.
 
 If you like it, please give me a star. Thanks a lot!
 
@@ -17,7 +17,7 @@ If you like it, please give me a star. Thanks a lot!
 ### Install
 
 ```
-npm install openapi-tool
+npm install openapi-to-ts2
 ```
 
 ### Example
@@ -27,7 +27,7 @@ npm install openapi-tool
 In order to gain the TypeScript typings (for intellisense / autocomplete) while using CommonJS imports with `require()` use the following approach:
 
 ```js
-const OpenApiTool = require('openapi-tool').default;
+const OpenApiTool = require('openapi-to-ts2').default;
 ```
 
 **PS: Typing `.default` is merely used to gain the TypeScript typings. Please remove `.default` when you launch the project, otherwise it will throw an error.**
@@ -35,7 +35,7 @@ const OpenApiTool = require('openapi-tool').default;
 #### Usage
 
 ```js
-const OpenApiTool = require('openapi-tool');
+const OpenApiTool = require('openapi-to-ts2');
 const { resolve } = require('path');
 
 const url = 'https://gw.alipayobjects.com/os/antfincdn/M%24jrzTTYJN/oneapi.json';
@@ -83,7 +83,7 @@ Get OpenApi that transformed from OAS2/OAS3.
 
 ### Plugin
 
-openapi-tool have a flexible plugin system which can add global-level functionality. 
+openapi-to-ts2 have a flexible plugin system which can add global-level functionality. 
 
 #### Using Plugin
 
@@ -129,4 +129,4 @@ openApiTool.log();
 
 ### License
 
-[MIT](https://github.com/huajiayi/openapi-tool/blob/main/LICENSE)
+[MIT](https://github.com/FEYeh/openapi-to-ts2/blob/main/LICENSE)

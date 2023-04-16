@@ -1,8 +1,8 @@
-# openapi-tool
+# openapi-to-ts2
 
-[English](https://github.com/huajiayi/openapi-tool) | 简体中文
+[English](https://github.com/FEYeh/openapi-to-ts2) | 简体中文
 
-openapi-tool 是一个基于 openapi 的工具，可以通过 swagger 文档自动生成前端 service 文件。
+openapi-to-ts2 是一个基于 openapi 的工具，可以通过 swagger 文档自动生成前端 service 文件。
 
 如果你喜欢这个项目，请给我一个 star。你的鼓励就是我最大的动力！
 
@@ -17,7 +17,7 @@ openapi-tool 是一个基于 openapi 的工具，可以通过 swagger 文档自�
 ### 安装
 
 ```
-npm install openapi-tool
+npm install openapi-to-ts2
 ```
 
 ### 栗子
@@ -27,14 +27,14 @@ npm install openapi-tool
 为了获得 TypeScript 的类型支持，在使用 `require()` 语句导入依赖时，需要在后边加上 `.default`，像是这样：
 
 ```js
-const OpenApiTool = require('openapi-tool').default;
+const OpenApiTool = require('openapi-to-ts2').default;
 ```
 **PS: 输入 `.default` 只是为了获得TypeScript 的类型支持，如果你要启动项目的话，请在启动前删除 `.default`，不然会报错。**
 
 #### 使用方式
 
 ```js
-const OpenApiTool = require('openapi-tool');
+const OpenApiTool = require('openapi-to-ts2');
 const { resolve } = require('path');
 
 const url = 'https://gw.alipayobjects.com/os/antfincdn/M%24jrzTTYJN/oneapi.json';
@@ -81,7 +81,7 @@ openApiTool.generateService({
 
 ### 插件
 
-openapi-tool 有一个灵活的插件系统，可以用来增加全局功能。
+openapi-to-ts2 有一个灵活的插件系统，可以用来增加全局功能。
 
 #### 使用插件
 
@@ -127,4 +127,4 @@ openApiTool.log();
 
 ### 协议
 
-[MIT](https://github.com/huajiayi/openapi-tool/blob/main/LICENSE)
+[MIT](https://github.com/FEYeh/openapi-to-ts2/blob/main/LICENSE)
