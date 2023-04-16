@@ -1,5 +1,5 @@
 import { OpenApi } from './openapi';
-export declare type Template = 'umi-request' | 'axios';
+export type Template = 'umi-request' | 'axios';
 export interface ServiceGeneratorOptions {
     template?: Template;
     importText?: string;

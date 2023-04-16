@@ -1,16 +1,9 @@
 'use strict';
 
-var request = require('umi-request');
+var axios = require('axios');
 var path = require('path');
 var fs = require('fs');
 var ejs = require('ejs');
-
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-var request__default = /*#__PURE__*/_interopDefaultLegacy(request);
-var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
-var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
-var ejs__default = /*#__PURE__*/_interopDefaultLegacy(ejs);
 
 const getOriginalRef = (ref) => {
     if (!ref) {
@@ -38,16 +31,13 @@ const removeArraySign = (type) => {
     return type.replace(/\[\]/g, '');
 };
 const report = (dist, code) => {
-    console.log(blue(path__default['default'].relative(process.cwd(), dist)) + ' ' + getSize(code));
+    console.log(blue(path.relative(process.cwd(), dist)) + ' ' + getSize(code));
 };
 const getSize = (code) => {
     return (code.length / 1024).toFixed(2) + 'kb';
 };
 const blue = (str) => {
     return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m';
-};
-const isString = (obj) => {
-    return Object.prototype.toString.call(obj) === '[object String]';
 };
 
 var Version;
@@ -217,8 +207,11 @@ const getApis = (data, definitions, types, version) => {
             schema = (api?.responses?.['200'] ?? api?.responses?.['201']).schema;
         }
         else {
-            const content = (api?.responses?.['200'] ?? api?.responses?.['201']).content ?? {};
+            const content = (api?.responses?.['200'] ?? api?.responses?.['201'])?.content ?? {};
             const firstProp = Object.keys(content)[0];
+            if (!firstProp) {
+                return;
+            }
             schema = content[firstProp].schema;
             const parseRequestBody = (requestBody) => {
                 const content = requestBody.content;
@@ -355,7 +348,7 @@ const getOpenApi = (data) => {
 
 const renderFile = (file, data) => {
     return new Promise((resolve, reject) => {
-        ejs__default['default'].renderFile(file, data, {}, (err, str) => {
+        ejs.renderFile(file, data, {}, (err, str) => {
             if (err) {
                 reject(err.message);
             }
@@ -368,7 +361,7 @@ const generateService = async (originalOpenApi, options) => {
     if (!outputDir) {
         throw new Error('please input outputDir!');
     }
-    const templates = ['umi-request', 'axios'];
+    const templates = ['request', 'umi-request', 'axios'];
     if (!templates.includes(template)) {
         throw new Error(`oops, there is no template of ${template} so far, you can open an issue at https://github.com/huajiayi/openapi-tool/issues.`);
     }
@@ -382,10 +375,10 @@ const generateService = async (originalOpenApi, options) => {
         const filePath = path.resolve(__dirname, '../', 'src', 'template', 'type.ejs');
         const service = await renderFile(filePath, { types });
         const output = path.resolve(outputDir, 'typings.ts');
-        if (!fs__default['default'].existsSync(outputDir)) {
-            fs__default['default'].mkdirSync(outputDir);
+        if (!fs.existsSync(outputDir)) {
+            fs.mkdirSync(outputDir);
         }
-        fs__default['default'].writeFileSync(output, service);
+        fs.writeFileSync(output, service);
         report(output, service);
     }
     const tagMap = new Map();
@@ -424,13 +417,16 @@ const generateService = async (originalOpenApi, options) => {
         const service = await renderFile(filePath, { importText, deps, apis, typescript });
         const fileSuffix = typescript ? 'ts' : 'js';
         const output = path.resolve(outputDir, `${tag}.${fileSuffix}`);
-        fs__default['default'].writeFileSync(output, service);
+        fs.writeFileSync(output, service);
         report(output, service);
     });
 };
 
 const plugins = [];
 class OpenApiTool {
+    static use(plugin, options) {
+        plugins.push({ plugin, options });
+    }
     constructor(options) {
         const { data, url } = options;
         if (!data && !url) {
@@ -439,17 +435,12 @@ class OpenApiTool {
         this.options = options;
         this.registerPlugins(plugins);
     }
-    static use(plugin, options) {
-        plugins.push({ plugin, options });
-    }
     async getOpenApi() {
-        const { data, url } = this.options;
+        const { data, url, requestConfig } = this.options;
         let jsonData = data;
         if (url) {
-            jsonData = await request__default['default'].get(url);
-        }
-        if (data && isString(data)) {
-            jsonData = JSON.parse(data);
+            const res = await axios.get(url, requestConfig);
+            jsonData = res.data;
         }
         return getOpenApi(jsonData);
     }

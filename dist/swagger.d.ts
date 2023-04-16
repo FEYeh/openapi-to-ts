@@ -1,7 +1,7 @@
-export declare type DataType = 'integer' | 'number' | 'boolean' | 'string' | 'array' | 'object' | 'file';
-export declare type DataFormat = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
-export declare type Protocol = 'http' | 'https' | 'ws' | 'wss';
-export declare type SupportedSpecMajorVersion = 2 | 3;
+export type DataType = 'integer' | 'number' | 'boolean' | 'string' | 'array' | 'object' | 'file';
+export type DataFormat = 'int32' | 'int64' | 'float' | 'double' | 'byte' | 'binary' | 'date' | 'date-time' | 'password';
+export type Protocol = 'http' | 'https' | 'ws' | 'wss';
+export type SupportedSpecMajorVersion = 2 | 3;
 export interface Spec {
     info: Info;
     tags?: Tag[];
@@ -140,21 +140,21 @@ export interface FormDataParameter extends BaseParameter {
     in: 'formData';
     collectionFormat?: 'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi';
 }
-export declare type Definitions = {
+export type Definitions = {
     [name: string]: Schema2;
 } | {
     [name: string]: Schema3;
 };
-export declare type Properties = {
+export type Properties = {
     [propertyName: string]: Schema2;
 } | {
     [propertyName: string]: Schema3;
 };
-export declare type Parameter = BodyParameter | FormDataParameter | QueryParameter | PathParameter | HeaderParameter;
-export declare type Parameter2 = Omit<Parameter & {
+export type Parameter = BodyParameter | FormDataParameter | QueryParameter | PathParameter | HeaderParameter;
+export type Parameter2 = Omit<Parameter & {
     'x-deprecated'?: boolean;
 }, 'deprecated'>;
-export declare type Parameter3 = Parameter;
+export type Parameter3 = Parameter;
 export interface Path {
     $ref?: string;
     get?: Operation;
@@ -389,9 +389,9 @@ export interface OAuth2AccessCodeSecurity extends BaseOAuthSecurity {
 export interface OAuthScope {
     [scopeName: string]: string;
 }
-export declare type OAuthFlow = {
+export type OAuthFlow = {
     [flowName in OAuth2FlowTypes]?: OAuth2SecurityFlow3;
 };
-export declare type OAuth2FlowTypes = 'authorizationCode' | 'implicit' | 'password' | 'clientCredentials';
-export declare type Security = BasicSecurity | BasicSecurity3 | ApiKeySecurity | OAuth2AccessCodeSecurity | OAuth2ApplicationSecurity | OAuth2ImplicitSecurity | OAuth2PasswordSecurity | OAuth2Security3;
+export type OAuth2FlowTypes = 'authorizationCode' | 'implicit' | 'password' | 'clientCredentials';
+export type Security = BasicSecurity | BasicSecurity3 | ApiKeySecurity | OAuth2AccessCodeSecurity | OAuth2ApplicationSecurity | OAuth2ImplicitSecurity | OAuth2PasswordSecurity | OAuth2Security3;
 export {};

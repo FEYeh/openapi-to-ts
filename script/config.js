@@ -35,7 +35,7 @@ function getConfig(name) {
         tsconfig: resolve('./tsconfig.json'), // 导入本地ts配置
       })
     ],
-    external: ['umi-request', 'fs', 'ejs', 'path']
+    external: ['axios', 'fs', 'ejs', 'path']
   }
 
   return config

@@ -1,11 +1,11 @@
-import request from 'umi-request';
+import axios, { AxiosRequestConfig } from "axios";
 import { getOpenApi, OpenApi } from './openapi';
 import generateService, { ServiceGeneratorOptions } from './serviceGenerator';
-import { isString } from './utils';
 
 export interface Options {
   data: string;
   url: string;
+  requestConfig: AxiosRequestConfig
 }
 
 export type Plugin = (openApiTool: typeof OpenApiTool, options: any) => void;
@@ -36,14 +36,12 @@ export default class OpenApiTool {
 
   /** 获取OpenApi */
   public async getOpenApi(): Promise<OpenApi> {
-    const { data, url } = this.options;
+    const { data, url, requestConfig } = this.options;
 
     let jsonData = data;
     if (url) {
-      jsonData = await request.get(url);
-    }
-    if (data && isString(data)) {
-      jsonData = JSON.parse(data);
+      const res = await axios.get(url, requestConfig);
+      jsonData = res.data;
     }
 
     return getOpenApi(jsonData);

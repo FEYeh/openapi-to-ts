@@ -276,8 +276,11 @@ const getApis = (
     if (version === Version.OAS2) {
       schema = ((api as Operation)?.responses?.['200'] ?? (api as Operation)?.responses?.['201']).schema;
     } else {
-      const content = ((api as Operation3)?.responses?.['200'] ?? (api as Operation3)?.responses?.['201']).content ?? {};
+      const content = ((api as Operation3)?.responses?.['200'] ?? (api as Operation3)?.responses?.['201'])?.content ?? {};
       const firstProp = Object.keys(content)[0];
+      if (!firstProp) {
+        return;
+      }
       schema = content[firstProp].schema;
 
       const parseRequestBody = (requestBody: any) => {

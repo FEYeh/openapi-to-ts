@@ -1,7 +1,7 @@
 const OpenApiTool = require('../dist/main');
 const { resolve } = require('path');
 
-const url = 'http://localhost:10001/api/v1/v3/api-docs';
+const url = 'https://localhost:3000/api/schema/';
 const outputDir = resolve(__dirname, 'service');
 
 const firstUpperCase = (str) => {
@@ -17,18 +17,24 @@ const formatUrl = (url) => {
   return firstWord + restWords + 'Service';
 }
 
-const openApiTool = new OpenApiTool({url});
+const requestConfig = {
+  auth: {
+    username: 'admin',
+    password: 'admin'
+  }
+}
+const openApiTool = new OpenApiTool({ url, requestConfig });
 openApiTool.generateService({
-  template: 'umi-request',
-  importText: `import request from 'umi-request';`,
+  template: 'request',
+  importText: `import request from "@src/utils/request";`,
   typescript: true,
   outputDir,
-  format: (openapi) => {
-    openapi.apis.forEach(o => {
-      o.tag = formatUrl(o.tag);
-      o.name = o.name.replace('UsingGET', '').replace('UsingPOST', '').replace('UsingPUT', '').replace('UsingDELETE', '');
-    })
-    return openapi;
-  }
+  // format: (openapi) => {
+  //   openapi.apis.forEach(o => {
+  //     o.tag = formatUrl(o.tag);
+  //     o.name = o.name.replace('UsingGET', '').replace('UsingPOST', '').replace('UsingPUT', '').replace('UsingDELETE', '');
+  //   })
+  //   return openapi;
+  // }
 });
 

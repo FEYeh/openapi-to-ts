@@ -1,4 +1,4 @@
-import request from 'umi-request';
+import axios from 'axios';
 import path, { resolve } from 'path';
 import fs from 'fs';
 import ejs from 'ejs';
@@ -36,9 +36,6 @@ const getSize = (code) => {
 };
 const blue = (str) => {
     return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m';
-};
-const isString = (obj) => {
-    return Object.prototype.toString.call(obj) === '[object String]';
 };
 
 var Version;
@@ -208,8 +205,11 @@ const getApis = (data, definitions, types, version) => {
             schema = (api?.responses?.['200'] ?? api?.responses?.['201']).schema;
         }
         else {
-            const content = (api?.responses?.['200'] ?? api?.responses?.['201']).content ?? {};
+            const content = (api?.responses?.['200'] ?? api?.responses?.['201'])?.content ?? {};
             const firstProp = Object.keys(content)[0];
+            if (!firstProp) {
+                return;
+            }
             schema = content[firstProp].schema;
             const parseRequestBody = (requestBody) => {
                 const content = requestBody.content;
@@ -359,7 +359,7 @@ const generateService = async (originalOpenApi, options) => {
     if (!outputDir) {
         throw new Error('please input outputDir!');
     }
-    const templates = ['umi-request', 'axios'];
+    const templates = ['request', 'umi-request', 'axios'];
     if (!templates.includes(template)) {
         throw new Error(`oops, there is no template of ${template} so far, you can open an issue at https://github.com/huajiayi/openapi-tool/issues.`);
     }
@@ -422,6 +422,9 @@ const generateService = async (originalOpenApi, options) => {
 
 const plugins = [];
 class OpenApiTool {
+    static use(plugin, options) {
+        plugins.push({ plugin, options });
+    }
     constructor(options) {
         const { data, url } = options;
         if (!data && !url) {
@@ -430,17 +433,12 @@ class OpenApiTool {
         this.options = options;
         this.registerPlugins(plugins);
     }
-    static use(plugin, options) {
-        plugins.push({ plugin, options });
-    }
     async getOpenApi() {
-        const { data, url } = this.options;
+        const { data, url, requestConfig } = this.options;
         let jsonData = data;
         if (url) {
-            jsonData = await request.get(url);
-        }
-        if (data && isString(data)) {
-            jsonData = JSON.parse(data);
+            const res = await axios.get(url, requestConfig);
+            jsonData = res.data;
         }
         return getOpenApi(jsonData);
     }
@@ -453,4 +451,4 @@ class OpenApiTool {
     }
 }
 
-export default OpenApiTool;
+export { OpenApiTool as default };

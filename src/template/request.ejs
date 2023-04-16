@@ -1,0 +1,82 @@
+<%_ if(importText !== '') { -%>
+<%- importText  %> 
+<%_ } else { -%>
+const request = require('request').default;
+<%_ } -%>
+<%_ if(typescript) { -%>
+import {
+  <%_ deps.forEach((dep) => { -%>
+  <%- dep %>,
+  <%_ }); -%>
+} from './typings';
+<%_ } -%>
+<% apis.forEach((api) => { %>
+/**
+ * <%- api.description %> <%- api.request.method %> <%- api.request.url %>
+ */
+export async function <%- api.name %> (
+  <%_ if(api.request.filter.path.length !== 0) { -%>
+  pathVars<%_ if(typescript) { -%>: {
+    <%_ api.request.filter.path.forEach((param) => { -%>
+    /** <%- param.description %> */
+    <%- param.name %><% if(!param.required) { %>?<% } %>: <%- param.type %>;
+    <%_ }); -%>
+  }<%_ } -%>,
+  <%_ } -%>
+  <%_ if(api.request.filter.query.length !== 0) { -%>
+  params<%_ if(typescript) { -%>?: {
+    <%_ api.request.filter.query.forEach((param) => { -%>
+    /** <%- param.description %> */
+    <%- param.name %><% if(!param.required) { %>?<% } %>: <%- param.type %>;
+    <%_ }); -%>
+  }<%_ } -%>,
+  <%_ } -%>
+  <%_ if(api.request.filter.body.arrayType.length !== 0) { -%>
+  data<%_ if(typescript) { -%>?: <%- api.request.filter.body.arrayType %>[],<%_ } %>
+  <%_ } else { -%>
+    <%_ if(api.request.filter.body.params.length !== 0) { -%>
+  data<%_ if(typescript) { -%>?: {
+    <%_ api.request.filter.body.params.forEach((param) => { -%>
+    /** <%- param.description %> */
+    <%- param.name %><% if(!param.required) { %>?<% } %>: <%- param.type %>;
+    <%_ }); -%>
+  }<%_ } -%>,
+  <%_ } -%>
+  <%_ } -%>
+  <%_ if(api.request.filter.formdata.length !== 0) { -%>
+  body<%_ if(typescript) { -%>?: {
+    <%_ api.request.filter.formdata.forEach((param) => { -%>
+    /** <%- param.description %> */
+    <%- param.name %><% if(!param.required) { %>?<% } %>: <%- param.type %>;
+    <%_ }); -%>
+  }<%_ } -%>,
+  <%_ } -%>
+  options<%_ if(typescript) { -%>?: Record<string, any><%_ } -%>,
+)<%_ if(typescript) { -%>: Promise<<%- api.response.type %>><%_ } -%> {
+  return request({
+    method: '<%- api.request.method %>',
+    url: `<%- api.request.urlText %>`,
+    <%_ if(api.request.filter.query.length !== 0) { -%>
+    params: {
+      ...params,
+    },
+    <%_ } -%>
+    <%_ if(api.request.filter.body.arrayType.length !== 0) { -%>
+    data,
+    <%_ } else { -%>
+      <%_ if(api.request.filter.body.params.length !== 0) { -%>
+    data: {
+      ...data,
+    },
+      <%_ } -%>
+    <%_ } -%>
+    <%_ if(api.request.filter.formdata.length !== 0) { -%>
+    headers: { 'content-type': 'application/x-www-form-urlencoded' },
+    data: {
+      ...data,
+    },
+    <%_ } -%>
+    ...(options || {}),
+  })
+}
+<%_ }); -%>

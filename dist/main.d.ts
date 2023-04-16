@@ -1,10 +1,12 @@
+import { AxiosRequestConfig } from "axios";
 import { OpenApi } from './openapi';
 import { ServiceGeneratorOptions } from './serviceGenerator';
 export interface Options {
     data: string;
     url: string;
+    requestConfig: AxiosRequestConfig;
 }
-export declare type Plugin = (openApiTool: typeof OpenApiTool, options: any) => void;
+export type Plugin = (openApiTool: typeof OpenApiTool, options: any) => void;
 export default class OpenApiTool {
     static use(plugin: Plugin, options: any): void;
     private options;
